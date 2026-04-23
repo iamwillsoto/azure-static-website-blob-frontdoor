@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crestline Bank — Digital Banking Refined v2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0d1117;
+      --surface: #111820;
+      --card:    #161e28;
+      --border:  #1f2d3d;
+      --gold:    #c9a84c;
+      --gold-lt: #e8c97a;
+      --muted:   #8a97a6;
+      --white:   #eef2f5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--ink);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(13, 17, 23, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--white); font-weight: 300; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 32px;
+    }
+
+    nav ul a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    nav ul a:hover { color: var(--gold-lt); }
+
+    .nav-cta {
+      padding: 9px 22px;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      border-radius: 2px;
+      font-size: 0.8rem !important;
+      letter-spacing: 0.1em !important;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold) !important;
+      color: var(--ink) !important;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 8vw, 7.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      max-width: 560px;
+      font-size: 1.05rem;
+      color: var(--muted);
+      margin-bottom: 48px;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      animation: fadeUp 0.8s 0.3s ease both;
+    }
+
+    .btn-primary {
+      padding: 14px 34px;
+      background: var(--gold);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { background: var(--gold-lt); transform: translateY(-1px); }
+
+    .btn-ghost {
+      padding: 14px 34px;
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .stat {
+      padding: 36px 48px;
+      border-right: 1px solid var(--border);
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: var(--gold);
+      display: block;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── FEATURES ── */
+    .features {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 100px 24px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 300;
+      margin-bottom: 64px;
+      max-width: 540px;
+      line-height: 1.2;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+    }
+
+    .feature-card {
+      background: var(--card);
+      padding: 48px 40px;
+      transition: background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.35s ease;
+    }
+
+    .feature-card:hover { background: #1a2430; }
+    .feature-card:hover::after { width: 100%; }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 28px;
+      opacity: 0.9;
+    }
+
+    .feature-card h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .feature-link {
+      display: inline-block;
+      margin-top: 24px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: letter-spacing 0.2s;
+    }
+
+    .feature-link:hover { letter-spacing: 0.16em; }
+
+    .feature-link::after { content: ' →'; }
+
+    /* ── HIGHLIGHT BAND ── */
+    .highlight-band {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .highlight-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 80px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .highlight-inner img {
+      width: 100%;
+      border-radius: 2px;
+      filter: brightness(0.85) saturate(0.7);
+      border: 1px solid var(--border);
+    }
+
+    .highlight-text .section-title { margin-bottom: 20px; }
+
+    .highlight-text p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 60px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 40px;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+
+    .footer-brand span { color: var(--white); font-weight: 300; }
+
+    .footer-disclaimer {
+      font-size: 0.78rem;
+      color: var(--muted);
+      max-width: 340px;
+      line-height: 1.7;
+    }
+
+    .footer-contact p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .footer-contact strong {
+      color: var(--white);
+      font-weight: 400;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      nav ul { display: none; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .highlight-inner { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      footer { flex-direction: column; padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">Crestline<span> Bank</span></a>
+    <ul>
+      <li><a href="#features">Services</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#" class="nav-cta">Open Account</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <p class="hero-eyebrow">Digital Banking — Refined</p>
+    <h1>Banking built<br/>for the <em>modern</em><br/>world.</h1>
+    <p class="hero-sub">Crestline Bank combines the trust of traditional finance with the speed and security of digital infrastructure — serving you wherever you are.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary">Open an Account</a>
+      <a href="#features" class="btn-ghost">Explore Services</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-number">$4.2B+</span><span class="stat-label">Assets Under Management</span></div>
+    <div class="stat"><span class="stat-number">320K+</span><span class="stat-label">Account Holders Worldwide</span></div>
+    <div class="stat"><span class="stat-number">99.99%</span><span class="stat-label">Platform Uptime SLA</span></div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <p class="section-label">What We Offer</p>
+    <h2 class="section-title">Three pillars of a better banking experience.</h2>
+    <div class="feature-grid">
+
+      <!-- Card 1: Security -->
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 4L8 10V24C8 33.94 15.06 43.22 24 46C32.94 43.22 40 33.94 40 24V10L24 4Z" stroke="#c9a84c" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M17 24L22 29L31 20" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Vault-Grade Security</h3>
+        <p>Every Crestline account is safeguarded by hardware-backed multi-factor authentication, end-to-end encryption, and real-time anomaly detection running around the clock.</p>
+        <a href="#" class="feature-link">Learn more</a>
+      </div>
+
+      <!-- Card 2: Transfers -->
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 16H40M8 32H40" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M30 10L40 16L30 22" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18 26L8 32L18 38" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Instant Transfers</h3>
+        <p>Move money domestically or internationally in seconds. Our intelligent routing engine ensures every transfer is fast, traceable, and settled with zero hidden fees.</p>
+        <a href="#" class="feature-link">Learn more</a>
+      </div>
+
+      <!-- Card 3: Support -->
+      <div class="feature-card">
+        <svg class="feature-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="16" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M16 24C16 19.58 19.58 16 24 16" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M14 24H18M30 24H34" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="24" cy="24" r="3" fill="#c9a84c"/>
+        </svg>
+        <h3>Always-On Support</h3>
+        <p>A dedicated team of banking specialists is available 24 hours a day, 365 days a year. Reach us by phone, chat, or video — on your schedule, not ours.</p>
+        <a href="#" class="feature-link">Learn more</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HIGHLIGHT BAND -->
+  <div class="highlight-band" id="about">
+    <div class="highlight-inner">
+      <div class="infra-illustration" aria-label="Cloud infrastructure illustration">
+        <svg viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:2px;">
+          <!-- Background -->
+          <rect width="480" height="340" fill="#0d1117"/>
+          <!-- Grid lines -->
+          <g stroke="#1f2d3d" stroke-width="0.8">
+            <line x1="0" y1="60"  x2="480" y2="60"/>
+            <line x1="0" y1="120" x2="480" y2="120"/>
+            <line x1="0" y1="180" x2="480" y2="180"/>
+            <line x1="0" y1="240" x2="480" y2="240"/>
+            <line x1="0" y1="300" x2="480" y2="300"/>
+            <line x1="80"  y1="0" x2="80"  y2="340"/>
+            <line x1="160" y1="0" x2="160" y2="340"/>
+            <line x1="240" y1="0" x2="240" y2="340"/>
+            <line x1="320" y1="0" x2="320" y2="340"/>
+            <line x1="400" y1="0" x2="400" y2="340"/>
+          </g>
+          <!-- Connection lines -->
+          <g stroke="#c9a84c" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.35">
+            <line x1="240" y1="80"  x2="120" y2="180"/>
+            <line x1="240" y1="80"  x2="360" y2="180"/>
+            <line x1="120" y1="180" x2="240" y2="260"/>
+            <line x1="360" y1="180" x2="240" y2="260"/>
+            <line x1="120" y1="180" x2="60"  y2="260"/>
+            <line x1="360" y1="180" x2="420" y2="260"/>
+          </g>
+          <!-- Glow behind center node -->
+          <circle cx="240" cy="80" r="44" fill="url(#glow1)" opacity="0.25"/>
+          <defs>
+            <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#c9a84c"/>
+              <stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- Azure Front Door — top center -->
+          <rect x="205" y="48" width="70" height="36" rx="3" fill="#161e28" stroke="#c9a84c" stroke-width="1"/>
+          <text x="240" y="62" text-anchor="middle" fill="#c9a84c" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.05em">AZURE</text>
+          <text x="240" y="74" text-anchor="middle" fill="#eef2f5" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.03em">FRONT DOOR</text>
+          <!-- Blob Storage — mid left -->
+          <rect x="85" y="160" width="70" height="36" rx="3" fill="#161e28" stroke="#1f2d3d" stroke-width="1"/>
+          <text x="120" y="174" text-anchor="middle" fill="#8a97a6" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.05em">BLOB</text>
+          <text x="120" y="186" text-anchor="middle" fill="#eef2f5" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.03em">STORAGE</text>
+          <!-- CDN — mid right -->
+          <rect x="325" y="160" width="70" height="36" rx="3" fill="#161e28" stroke="#1f2d3d" stroke-width="1"/>
+          <text x="360" y="174" text-anchor="middle" fill="#8a97a6" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.05em">CDN</text>
+          <text x="360" y="186" text-anchor="middle" fill="#eef2f5" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.03em">EDGE NODES</text>
+          <!-- Users — bottom row -->
+          <rect x="205" y="242" width="70" height="36" rx="3" fill="#161e28" stroke="#1f2d3d" stroke-width="1"/>
+          <text x="240" y="256" text-anchor="middle" fill="#8a97a6" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.05em">HTTPS</text>
+          <text x="240" y="268" text-anchor="middle" fill="#eef2f5" font-family="DM Sans,sans-serif" font-size="7" letter-spacing="0.03em">CLIENTS</text>
+          <!-- Small side nodes -->
+          <circle cx="60"  cy="278" r="16" fill="#161e28" stroke="#1f2d3d" stroke-width="1"/>
+          <text x="60" y="282" text-anchor="middle" fill="#8a97a6" font-family="DM Sans,sans-serif" font-size="6.5">SAS</text>
+          <circle cx="420" cy="278" r="16" fill="#161e28" stroke="#1f2d3d" stroke-width="1"/>
+          <text x="420" y="282" text-anchor="middle" fill="#8a97a6" font-family="DM Sans,sans-serif" font-size="6.5">SSL</text>
+          <!-- Active pulse dot on Front Door -->
+          <circle cx="240" cy="66" r="3.5" fill="#c9a84c" opacity="0.9"/>
+          <!-- Label -->
+          <text x="240" y="326" text-anchor="middle" fill="#1f2d3d" font-family="DM Sans,sans-serif" font-size="9" letter-spacing="0.15em">CRESTLINE CLOUD ARCHITECTURE</text>
+        </svg>
+      </div>
+      <div class="highlight-text">
+        <p class="section-label">Our Infrastructure</p>
+        <h2 class="section-title">Powered by the cloud. Secured by design.</h2>
+        <p>Crestline's platform is built on globally distributed cloud infrastructure. With Azure-backed redundancy and front-door delivery, your data is always close, always protected, and always available — even during peak demand.</p>
+        <a href="#" class="btn-primary">Our Technology</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER / CONTACT -->
+  <footer id="contact">
+    <div>
+      <div class="footer-brand">Crestline<span> Bank</span></div>
+      <p class="footer-disclaimer">Crestline Bank is a fictitious entity created for demonstration and cloud infrastructure training purposes. No real financial services are offered or implied.</p>
+    </div>
+    <div class="footer-contact">
+      <p><strong>Crestline Bank, N.A.</strong></p>
+      <p>450 Park Avenue, Suite 2100</p>
+      <p>New York, NY 10022</p>
+      <p>Phone: (212) 555-0190</p>
+      <p>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfem
